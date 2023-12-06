@@ -1,0 +1,201 @@
+/* body{
+  background-color: antiquewhite;
+} */
+
+
+footer {
+  background-color: #BBAB8C; /* Choose your desired background color */
+  color: #fff; /* Choose your desired text color */
+  padding: 20px 0; /* Adjust padding as needed */
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.logo-img {
+  width: 100px;
+  margin-right: 25px;
+  margin-left: 40px;
+  vertical-align: middle;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Add a subtle box shadow on hover */
+}
+
+.card-body {
+  padding: 10px;
+  height: 90%;
+  /* Cards will have the same height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.custom-image {
+  max-width: 400px;
+  /* Set the maximum width as needed */
+  width: 100%;
+  /* Ensure responsiveness */
+  height: auto;
+  /* Maintain aspect ratio */
+}
+
+.custom-image-container {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  /* Adjust the gap between image and text */
+}
+
+.btn-outline-custom {
+  color: #BBAB8C;
+  border-color: #BBAB8C;
+}
+
+.btn-custom {
+  background-color: #BBAB8C;
+  border-color: #BBAB8C;
+  color: #ffffff;
+  /* Warna teks tombol ketika tombol solid */
+}
+
+.custom-card-color {
+  background-color: #ffffff;
+}
+
+.card:hover {
+  transform: perspective(500px) rotateY(10deg);
+  /* Example transformation */
+}
+
+.card2 {
+  background-color: transparent;
+
+}
+
+.about-video {
+  position: relative;
+  margin-left: auto;
+  /* Center the video horizontally */
+  margin-right: 10px;
+  top: 60px;
+}
+
+.benefit {
+  padding: 60px 0;
+  text-align: center;
+}
+
+.benefit h2 {
+  font-size: 32px;
+  color: #000000;
+  margin-bottom: 10px;
+}
+
+.card2 {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.card2:hover {
+  transform: translateY(-5px);
+}
+
+.card2 img {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  display: block;
+}
+
+.card2 .card-body {
+  text-align: center;
+}
+
+.card2 .card-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card2 .card-text {
+  font-size: 16px;
+  color: black;
+}
+
+#contact {
+  padding: 30px 0;
+}
+
+.card3.text-center {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.card3-header {
+  background-color: #bcb6ab;
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 15px 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.card3-body {
+  margin-top: 30px;
+}
+
+.card3-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.card3-text {
+  font-size: 16px;
+}
+
+.location,
+.email,
+.instagram {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
+.col-1 {
+  position: fixed;
+  bottom: -1px;
+  right: 1px;
+  z-index: 1000;
+}
+
+.col-1 svg {
+  width: 40px;
+  height: 40px;
+}
+
