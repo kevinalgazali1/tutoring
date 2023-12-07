@@ -17,8 +17,7 @@ class ContentController extends Controller
      */
     public function index()
     {
-        $this->middleware('admin');
-        $contents = Content::latest()->get();
+        $contents = Content::with('course')->latest()->get();
 
         return view('pengajar.content', compact('contents'));
     }

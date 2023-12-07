@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CourseUpdateRequest;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CourseStoreRequest;
+use App\Http\Requests\CourseUpdateRequest;
 use Illuminate\Auth\Access\AuthorizationException;
 
 class CourseController extends Controller
@@ -102,13 +103,23 @@ class CourseController extends Controller
     {
         try {
             $this->authorize('delete', $course);
-            if ($course->gambar) {
-                unlink('storage/' . $course->gambar);
+    
+            // Hapus semua content yang terkait dengan course
+            foreach ($course->contents as $content) {
+    
+                $content->delete();
             }
+    
+            // Hapus gambar course jika ada
+            if ($course->gambar) {
+                Storage::delete('public/' . $course->gambar);
+            }
+    
+            // Hapus course
             $course->delete();
-
+    
             return redirect()->back()->with([
-                'message' => 'Data Berhasil DiHapus',
+                'message' => 'Data Berhasil DiHapus berserta isinya',
                 'alert-type' => 'danger'
             ]);
         } catch (AuthorizationException $e) {

@@ -13,7 +13,7 @@ class Content extends Model
     protected $guarded = ['id'];
 
     
-    public function course(): BelongsTo
+    public function course()
     {
         return $this->belongsTo(Course::class);
     }

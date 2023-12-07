@@ -107,22 +107,32 @@ class AdminController extends Controller
     {
         try {
             $this->authorize('delete', $course);
-            if ($course->gambar) {
-                unlink('storage/' . $course->gambar);
+    
+            // Hapus semua content yang terkait dengan course
+            foreach ($course->contents as $content) {
+    
+                $content->delete();
             }
+    
+            // Hapus gambar course jika ada
+            if ($course->gambar) {
+                Storage::delete('public/' . $course->gambar);
+            }
+    
+            // Hapus course
             $course->delete();
-
+    
             return redirect()->back()->with([
-                'message' => 'Data Berhasil DiHapus',
+                'message' => 'Data Berhasil DiHapus berserta isinya',
                 'alert-type' => 'danger'
             ]);
         } catch (AuthorizationException $e) {
-            return redirect()->route('admin.course')->with([
+            return redirect()->route('course.index')->with([
                 'message' => 'Anda tidak diizinkan menghapus course ini.',
                 'alert-type' => 'warning'
             ]);
         }
-    }    
+    }  
     
     public function indexcontent()
     {
