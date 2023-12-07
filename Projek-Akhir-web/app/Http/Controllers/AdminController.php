@@ -7,8 +7,11 @@ use App\Models\Course;
 use App\Models\Content;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CourseStoreRequest;
+use App\Http\Requests\ContentStoreRequest;
 use App\Http\Requests\CourseUpdateRequest;
+use App\Http\Requests\ContentUpdateRequest;
 use Illuminate\Auth\Access\AuthorizationException;
 
 class AdminController extends Controller
@@ -41,26 +44,32 @@ class AdminController extends Controller
                 Course::create($request->except('gambar') + ['gambar' => $gambar, 'user_id' => $user_id]);
             }
     
-            return redirect()->route('course.index')->with([
+            return redirect()->route('admin.course')->with([
                 'message' => 'Course Berhasil Dibuat',
                 'alert-type' => 'success'
             ]);
         } catch (\Exception $e) {
-            return redirect()->route('course.index')->with([
+            return redirect()->route('admin.course')->with([
                 'message' => 'Gagal membuat Course. Error: ' . $e->getMessage(),
                 'alert-type' => 'danger'
             ]);
         }
     }
 
-    public function edit(Course $course, User $user)
+    public function edit(Course $course)
     {
-        // Lanjutkan dengan tampilan edit tanpa melakukan otorisasi
-        if (!$user || !($user->isAdmin() || $course->user_id === $user->id)) {
-            return back()->withErrors(['error' => 'Anda tidak memiliki akses untuk mengedit.']);
+        try {
+            $this->authorize('update', $course);
+    
+            // Lanjutkan dengan tampilan edit jika pengguna diotorisasi
+            return view('admin.courseedit', compact('course'));
+    
+        } catch (AuthorizationException $e) {
+            return redirect()->route('admin.course')->with([
+                'message' => 'Anda tidak diizinkan mengedit course ini.',
+                'alert-type' => 'warning'
+            ]);
         }
-
-        return view('admin.courseedit', compact('course', 'user'));
     }
 
     public function updateImage(Request $request, $courseId)
@@ -88,7 +97,7 @@ class AdminController extends Controller
             $course->update($request->validated());
         }
 
-        return redirect()->route('course.index')->with([
+        return redirect()->route('admin.course')->with([
             'message' => 'Data Berhasil Diedit',
             'alert-type' => 'info'
         ]);
@@ -96,42 +105,112 @@ class AdminController extends Controller
 
     public function destroy(Course $course)
     {
+        try {
+            $this->authorize('delete', $course);
             if ($course->gambar) {
                 unlink('storage/' . $course->gambar);
             }
-    
             $course->delete();
-    
+
             return redirect()->back()->with([
                 'message' => 'Data Berhasil DiHapus',
                 'alert-type' => 'danger'
             ]);
+        } catch (AuthorizationException $e) {
+            return redirect()->route('admin.course')->with([
+                'message' => 'Anda tidak diizinkan menghapus course ini.',
+                'alert-type' => 'warning'
+            ]);
+        }
+    }    
+    
+    public function indexcontent()
+    {
+        $contents = Content::latest()->get();
+        return view('admin.content', compact('contents'));
     }
 
     // CRUD for contents
     public function createContent()
     {
-        // Show the form to create a new content
+        $user_id = auth()->id();
+        $contents = Course::where('user_id', $user_id)->get();
+
+        return view('admin.contentcreate', compact('contents'));
     }
 
-    public function storeContent(Request $request)
+    public function storecontent(ContentStoreRequest $request)
     {
-        // Store a new content
+        try {
+            $validatedData = $request->validated();
+    
+            // Mendapatkan user_id dari pengguna yang sedang login
+            $user_id = auth()->id();
+    
+            // Menyimpan data ke dalam tabel contents
+            $content = new Content;
+            $content->user_id = $user_id;
+            $content->course_id = $validatedData['course_id'];
+            $content->judul = $validatedData['judul'];
+            $content->materi = $validatedData['materi'];
+            $content->save();
+    
+            return redirect()->route('admin.content')->with([
+                'message' => 'Content Berhasil Dibuat',
+                'alert-type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.content')->with([
+                'message' => 'Gagal membuat Content. Error: ' . $e->getMessage(),
+                'alert-type' => 'danger'
+            ]);
+        }
     }
 
     public function editContent(Content $content)
     {
-        // Show the form to edit a content
+        try {
+            $this->authorize('update', $content);
+        
+            // Lanjutkan dengan tampilan edit jika pengguna diotorisasi
+            return view('admin.contentedit', compact('content'));
+        
+        } catch (AuthorizationException $e) {
+            return redirect()->route('admin.content')->with([
+                'message' => 'Anda tidak diizinkan mengedit content ini.',
+                'alert-type' => 'warning'
+            ]);
+        }
     }
 
-    public function updateContent(Request $request, Content $content)
+    public function updateContent(ContentUpdateRequest $request, Content $content)
     {
-        // Update the content
+        if($request->validated()) {
+            $content->update($request->validated());
+        }
+
+        return redirect()->route('admin.content')->with([
+            'message' => 'Content Berhasil Diedit',
+            'alert-type' => 'info'
+        ]);
     }
 
     public function destroyContent(Content $content)
     {
-        // Delete the content
+        try {
+            $this->authorize('delete', $content);
+            $content->delete();
+
+            return redirect()->back()->with([
+                'message' => 'Content Berhasil DiHapus',
+                'alert-type' => 'danger'
+            ]);
+        } catch (AuthorizationException $e) {
+            return redirect()->route('admin.content')->with([
+                'message' => 'Anda tidak diizinkan menghapus content ini.',
+                'alert-type' => 'warning'
+            ]);
+        }
     }
 
     // User management
@@ -144,10 +223,19 @@ class AdminController extends Controller
     public function deleteUser(User $user)
     {
         try {
-            // Hapus content terkait terlebih dahulu
+            // Hapus semua content terkait user
             $user->contents()->delete();
     
-            // Kemudian baru hapus user
+            // Hapus semua course terkait user
+            $user->courses()->each(function ($course) {
+                // Hapus gambar terkait course
+                if ($course->gambar) {
+                    unlink('storage/' . $course->gambar);
+                }
+                $course->delete();
+            });
+    
+            // Hapus user
             $user->delete();
     
             return redirect()->route('admin.user')->with('message', 'User deleted successfully');
@@ -155,4 +243,5 @@ class AdminController extends Controller
             return redirect()->route('admin.user')->with('message', 'Failed to delete user. Error: ' . $e->getMessage());
         }
     }
+    
 }

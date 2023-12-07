@@ -109,4 +109,14 @@ class HomeController extends Controller
             'alert-type' => 'success'
         ]);
     }
+
+    public function search(Request $request)
+    {
+        $nama = $request->input('nama'); // Ambil nilai yang diinputkan pengguna
+    
+        $courses = Course::where('nama', 'like', '%' . $nama . '%')->get();
+
+    
+        return view('pengajar.search', ['cars' => $courses], compact('courses'));
+    }
 }

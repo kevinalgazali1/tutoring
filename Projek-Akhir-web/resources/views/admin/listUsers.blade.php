@@ -26,7 +26,7 @@
             {{ session('message') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+        @endif
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead class="align-middle">
@@ -38,19 +38,22 @@
                 </thead>
                 <tbody>
                     @forelse ($users as $user)
-                        <tr class="{{ auth()->id() === $user->user_id ? 'created-by-me' : '' }}">
-                            <td class="align-middle">{{ $loop->iteration }}</td>
-                            <td class="align-middle">{{ $user->name }}</td>
-                            <td class="align-middle">
-                                <form onclick="return confirm('Apakah anda yakin ingin menghapus data?');"
-                                    class="d-inline" action="{{ route('admin.user.delete', $user->id) }}"
-                                    method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
+                        {{-- Check if the user has the 'admin' role --}}
+                        @if($user->role !== 'admin')
+                            <tr class="{{ auth()->id() === $user->user_id ? 'created-by-me' : '' }}">
+                                <td class="align-middle">{{ $loop->iteration }}</td>
+                                <td class="align-middle">{{ $user->name }}</td>
+                                <td class="align-middle">
+                                    <form onclick="return confirm('Apakah anda yakin ingin menghapus data?');"
+                                        class="d-inline" action="{{ route('admin.user.delete', $user->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endif
                     @empty
                         <tr>
                             <td colspan="6" class="text-center">Data Kosong</td>

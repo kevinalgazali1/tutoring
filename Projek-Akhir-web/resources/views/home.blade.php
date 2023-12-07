@@ -17,9 +17,7 @@
           <a class="navbar-brand text-white" href="#benefit">SERVICE</a>
           <a class="navbar-brand text-white" href="#contact">CONTACT</a>
 
-          <form class="d-flex mt-4 ms-auto" role="search" style="margin: 16px;">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-secondary" type="submit">Search</button>
+          <form class="d-flex mt-4 ms-auto">
           </form>
         </div>
       </nav>

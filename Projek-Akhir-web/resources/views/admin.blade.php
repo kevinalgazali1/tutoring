@@ -33,7 +33,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('admin.home') }}">Home</a></li>
                             <li><a class="dropdown-item" href="{{ route('admin.course') }}">Course Management</a></li>
-                            <li><a class="dropdown-item" href="#">Content Management</a></li>
+                            <li><a class="dropdown-item" href="{{ route('admin.content') }}">Content Management</a></li>
                             <li><a class="dropdown-item" href="{{ route('admin.user') }}">User Management</a></li>
                             <li>
                                 <hr class="dropdown-divider">

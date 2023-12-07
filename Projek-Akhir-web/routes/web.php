@@ -36,6 +36,12 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::put('admin/course/update-image/{id}', [AdminController::class, 'updateImage'])->name('admin.course.updateImage');
     Route::get("/admin/user", [AdminController::class, 'listUsers'])->name('admin.user');
     Route::delete('/admin/user/delete/{user}', [AdminController::class, 'deleteUser'])->name('admin.user.delete');
+    Route::get('admin/content', [AdminController::class, 'indexcontent'])->name('admin.content');
+    Route::get('admin/content/create', [AdminController::class, 'createContent'])->name('admin.content.create');
+    Route::post('admin/content/store', [AdminController::class, 'storecontent'])->name('admin.content.store');
+    Route::get('admin/content/edit', [AdminController::class, 'editContent'])->name('admin.content.edit');
+    Route::put('admin/content/update', [AdminController::class, 'updateContent'])->name('admin.content.update');
+    Route::delete('admin/content/destroy', [AdminController::class, 'destroyContent'])->name('admin.content.destroy');
 });
 
 
@@ -49,6 +55,7 @@ Route::get('siswa/profile', [HomeController::class, 'siswaprofile'])->name('sisw
 Route::post('/siswa/profile/update', [HomeController::class, 'siswaupdateProfile'])->name('siswa.profile.update');
 Route::get('siswa/lesson/{course}', [HomeController::class, 'lesson'])->name('siswa.lesson');
 Route::get('siswa/lesson/{course}/content/{content}', [SiswaController::class, 'showLessonContent'])->name('siswa.lesson.content');
+Route::get('siswa/search', [SiswaController::class, 'search'])->name('siswa.search');
 
 // routes pengajar
 Route::get("/pengajar", [HomeController::class, 'pengajar'])->name('pengajar');
@@ -58,6 +65,7 @@ Route::resource('/pengajar/content', ContentController::class);
 Route::put('/pengajar/content/{content}', [ContentController::class, 'update'])->name('content.updateContent');
 Route::get('pengajar/profile', [HomeController::class, 'pengajarprofile'])->name('pengajar.profile');
 Route::post('/pengajar/profile/update', [HomeController::class, 'pengajarupdateProfile'])->name('pengajar.profile.update');
+Route::get('siswa/search', [HomeController::class, 'search'])->name('pengajar.search');
 
 Auth::routes();
 

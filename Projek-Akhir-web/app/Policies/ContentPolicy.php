@@ -2,8 +2,9 @@
 
 namespace App\Policies;
 
-use App\Models\Content;
 use App\Models\User;
+use App\Models\Content;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ContentPolicy
@@ -21,11 +22,15 @@ class ContentPolicy
 
     public function update(User $user, Content $content)
     {
-        return $user->id === $content->user_id;
+        return $user->isAdmin() || $user->id === $content->user_id
+            ? Response::allow()
+            : Response::deny('Anda tidak diizinkan mengedit content ini.');
     }
 
     public function delete(User $user, Content $content)
     {
-        return $user->id === $content->user_id;
+        return $user->isAdmin() || $user->id === $content->user_id
+            ? Response::allow()
+            : Response::deny('Anda tidak diizinkan menghapus content ini.');
     }
 }

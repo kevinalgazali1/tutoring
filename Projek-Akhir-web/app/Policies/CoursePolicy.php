@@ -13,11 +13,7 @@ class CoursePolicy
      * Determine whether the user can view any models.
      */
 
-     use HandlesAuthorization;
-    public function __construct()
-    {
-        //
-    }
+    use HandlesAuthorization;
 
     public function update(User $user, Course $course)
     {
